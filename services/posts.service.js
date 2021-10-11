@@ -43,7 +43,7 @@ const services = {
             //db.posts.findOneAndUpdate()
             const data = await db.posts
                         .findOneAndUpdate(
-                            {id : req.params.id},
+                            {id : Number(req.params.id)},
                             {$set:{...req.body}},
                             {returnNewDocument : true}
                         );
