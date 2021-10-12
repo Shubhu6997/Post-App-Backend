@@ -1,8 +1,6 @@
 
 const db = require("../Shared/mongo");
 
-const {ObjectId} = require("mongodb");
-
 const services = {
     async findPosts(req, res){
         try {
@@ -24,11 +22,17 @@ const services = {
     async insertPost(req, res){
         try {
             console.log("POST method is called");
-            console.log(req.body);
+          
+
+            let count = await db.posts.find().count();
+            count++;
+            console.log({id : count,...req.body});
+            
             //db.posts.insertOne()
-            const data = await db.posts.insertOne({...req.body});
+            const data = await db.posts.insertOne({id : count, ...req.body});
             console.log(data);
-            res.send({_id: data.insertedId ,...req.body});
+           
+            res.send({id : count ,...req.body});
         } catch (error) {
             console.log("Error while inserting : ", error);
             res.sendStatus(500);  
