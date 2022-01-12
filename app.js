@@ -15,11 +15,15 @@ const mongo = require("./Shared/mongo");
 
         //Routes
         const postRoute = require("./routes/posts.routes");
+        const commentsRoute = require("./routes/comments.routes");
+        const usersRoute = require("./routes/users.routes");
 
         //Middleware to parse request body into JSON format
         app.use(express.json());
 
         app.use("/posts", postRoute);
+        app.use("/comments", commentsRoute);
+        app.use("/users", usersRoute);
         
 
         //Server Start

@@ -8,6 +8,8 @@ module.exports = {
     
     //Connection specific to collection
     posts : null,
+    comments : null,
+    users : null,
 
     async connect(){ 
         //Connecting to database
@@ -20,6 +22,9 @@ module.exports = {
 
         //Initialize Collection
         this.posts = this.db.collection("posts");
+        this.comments = this.db.collection("comments");
+        this.users = this.db.collection("users");
+
        
 
     }

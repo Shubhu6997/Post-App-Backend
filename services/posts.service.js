@@ -10,7 +10,7 @@ const services = {
             console.log(req.query);
             //db.posts.find()
             const data = await db.posts.find().toArray();//Coverted seperate JSONs into array
-            console.log(data);
+            //console.log(data);
             res.send(data);
             
         } catch (error) {
@@ -23,12 +23,11 @@ const services = {
         try {
             console.log("POST method is called");
           
-
             let count = await db.posts.find().count();
+            console.log(count);
             count++;
             console.log({id : count,...req.body});
             
-            //db.posts.insertOne()
             const data = await db.posts.insertOne({id : count, ...req.body});
             console.log(data);
            
@@ -42,17 +41,22 @@ const services = {
     async updatePost(req, res){
         try {
             console.log("PUT method is called");
-            console.log(req.body);
-            console.log("parameters :",req.params);
-            //db.posts.findOneAndUpdate()
-            const data = await db.posts
-                        .findOneAndUpdate(
-                            {id : Number(req.params.id)},
-                            {$set:{...req.body}},
-                            {returnNewDocument : true}
-                        );
-            console.log(data);
-            res.send({data});
+            console.log("userId :",req.body.userId);
+           // console.log("parameters :",req.params);
+            const {userId} = await db.posts.findOne({},{id : Number(req.params.id)});
+            console.log("userId :",userId);
+
+            if(req.body.userId === userId){
+                const data = await db.posts.findOneAndUpdate(
+                    {id : Number(req.params.id)},
+                    {$set:{...req.body}},
+                    {returnNewDocument : true}
+                );
+                res.send("Post updated successfully");
+            }else{
+                res.send("You are not authorized to update this post");
+            }
+           
         } catch (error) {
             console.log("Error while updating : ", error);
             res.sendStatus(500);  
@@ -62,10 +66,19 @@ const services = {
     async deletePost(req, res){
         try {
             console.log("DELETE method is called");
-            //db.posts.remove()
+            console.log("userId :", req.body.userId);
             console.log("parameters :",req.params);
-            await db.posts.deleteOne({id : Number(req.params.id)});
-            res.end("Deleted Record Successfully");
+            const {userId} = await db.posts.findOne({},{id : Number(req.params.id)})
+            console.log("postUserId :", userId);
+
+            if(req.body.userId === userId){
+                await db.posts.deleteOne({id : Number(req.params.id)});
+                res.send("Deleted Record Successfully");
+            }
+            else{
+                res.send("You are not authorized to delete this post");
+            }
+              
         } catch (error) {
             console.log("Error while deleting : ", error);
             res.sendStatus(500);  
